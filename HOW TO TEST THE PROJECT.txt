@@ -1,0 +1,14 @@
+
+
+
+
+- npm install
+
+
+- yarn install
+
+
+- npm run start 
+
+
+Note : We have to take a "port" that is available. Example : LE PORT 3000     

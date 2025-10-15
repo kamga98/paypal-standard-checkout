@@ -1,27 +1,36 @@
 import express from 'express';
 import fetch from 'node-fetch';
+import cors from "cors";
 import 'dotenv/config';
 
-import cors from "cors";
-  
+      
 
-// We get the datas from the project e-shop    
-async function getCartData() {
-    const response = await fetch('http://localhost:8000/api/cart'); // Symfony
-    const data = await response.json();
-    return data;
-}
+// We get the datas from the project e-shop  
+// app.get('/paypal/cart', (req, res) => {
+//     const cartData = getCartData();
+//     res.json(cartData); // Envoie les données au client
+// });
+     
+// async function getCartData() {
+//     const response = await fetch('http://localhost:8000/api/cart'); // Symfony
+//     const data = await response.json();
+//     return data;
+// }
+ 
+// Pour les fichiers statiques (comme .png, .css, .html) depuis le dossier courant”.
 
+     
+    
+const app = express();  
+ 
+app.use(express.static('.'));
 
 // Autoriser les requêtes depuis cette origine (ou "*")
-
-const app = express();  
 app.use(cors({
   origin: "http://127.0.0.1:3001",
   methods: ["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Accept"]
 }));
-   
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -52,9 +61,12 @@ app.post('/create_order', (req, res) => {
                 'intent': req.body.intent.toUpperCase(),
                 'purchase_units': [{
                     'amount': {
-                        'currency_code': cartData.currency,
-                        'value': cartData.total
 
+                        'currency_code': 'USD',
+                        'value': '1'   
+                        // 'currency_code': cartData.currency,
+                        // 'value': cartData.total    
+      
                        }        
                 }]       
             };
@@ -116,10 +128,28 @@ app.post('/complete_order', (req, res) => {
 
 // Helper / Utility functions
 
-//Servers the index.html file
-app.get('/', (req, res) => {
-    res.sendFile(process.cwd() + '/index.html');
-});
+//Servers the index.html file 
+// app.get('/', (req, res) => { 
+//     // Affichage de la page index.html 
+//     res.sendFile(process.cwd() + '/index.html'); 
+
+// });
+
+import fs from 'fs';
+import path from 'path';
+
+
+   
+// C'est cette fonction qui est appelée après un clique de l'utilisateur sur le bouton Checkout.
+// A cette étapes précises, les données du panier sont initialisées.  
+app.get('/', (req, res) => { 
+    // Affichage de la page index.html 
+    res.sendFile(process.cwd() + '/index.html'); 
+
+});  
+
+     
+
 //Servers the style.css file
 app.get('/style.css', (req, res) => {
     res.sendFile(process.cwd() + '/style.css');

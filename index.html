@@ -7,33 +7,74 @@
     <title>PPCP Standard</title>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/minstyle.io@2.0.1/dist/css/minstyle.io.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="script.js"></script>
+    <script src="script.js"></script>  
    
   </head>
   <body>
-    <div class="container">
-      <div class="row">  
-        <div class="col-sm"></div>
-        <div class="col-sm">   
-          <h2 class="ms-text-center">ai-generated NFT Bored Ape</h2>
-          <div class="ms-text-center pb-2">
-            <div class="ms-label ms-large ms-action2 ms-light">$1 USD</div>
-          </div>     
-          <div id="alerts" class="ms-text-center"></div>   
-          <div id="loading" class="spinner-container ms-div-center">
-            <div class="spinner"></div>
-          </div>
-          <div id="content" class="hide">
-            <div class="ms-card ms-fill">
-              <div class="ms-card-content">
-                <img src="https://cdn.discordapp.com/attachments/1060825015681028127/1076385063903694908/rauljr7_3d_e83fed6a-69aa-4a6a-b0ec-928edd57aecf.png" style="width:400px">
-              </div>
+      <div class="container">
+          <div class="row">  
+            <div class="col-sm"></div>
+            <div class="col-sm">     
+              <!-- Titre centré -->
+              <h2 class="ms-text-center">PAIEMENT</h2>    
+
+              <div class="pb-2">  
+                <!-- Texte sur deux lignes avec <br> -->
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                  <span>Total incluant les frais de livraison : </span>
+                  <span style="margin-top: 10px; font-weight: bold;">$1 000 000 USD</span>
+                </div> 
+                         
+              </div>     
+
+              <div id="alerts" class="ms-text-center"></div>   
+
+              <div id="loading" class="spinner-container ms-div-center">
+                <div class="spinner"></div>         
+              </div>  
+
+              <div id="content" class="hide">    
+                <div class="ms-card ms-fill">
+                  <div class="ms-card-content">
+                    <img src="/paypal.png" alt="Logo PayPal" style="width:200px;">
+                  </div>               
+                </div>
+                <div id="payment_options"></div>        
+              </div>      
             </div>
-            <div id="payment_options"></div>
+            <div class="col-sm"></div>
           </div>
-        </div>
-        <div class="col-sm"></div>
       </div>
-    </div>
+
+     <script>
+    
+        // document.addEventListener('DOMContentLoaded', async () => {
+        //   try {
+        //     const res = await fetch('http://localhost:8000/api/cart', {
+        //       credentials: 'include' // 🔥 très important pour envoyer les cookies de session
+        //     });   
+        //     const cartData = await res.json();
+        //     console.log("Panier :", cartData);
+                
+            
+        //     // Mise à jour du prix affiché
+        //     const priceEl = document.getElementById('cart-total');
+        //     if (priceEl && cartData.value && cartData.currency_code) {
+        //       priceEl.textContent = `${cartData.value} ${cartData.currency_code}`;
+        //     }
+
+        //     window.cartData = cartData;
+        //     // Tu peux ensuite lancer PayPal, etc.
+              
+
+        //   } catch (err) {
+        //     console.error("Erreur de récupération du panier :", err);
+        //   }
+        // });     
+          
+         window.cartData = {{CART_DATA}};
+    </script>   
+    
   </body>
+    
 </html>

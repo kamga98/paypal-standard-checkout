@@ -20,25 +20,27 @@ let handle_click = (event) => {
         handle_close(event);
     }
 }   
+
 document.addEventListener("click", handle_click);
 const paypal_sdk_url = "https://www.paypal.com/sdk/js";
 const client_id = "ASAPZ1xxwEQx-Kdr2s6rtj70ExFrqbwPIJ3Vh_Qstmu2q51oPknbQvspagXSKe5fiM85-fowDFGICyQb";
 const currency = "USD";
 const intent = "capture";      
 let alerts = document.getElementById("alerts");
-
-
-async function getCartData() {
-    const response = await fetch('http://localhost:8000/api/cart'); // Symfony
-    const data = await response.json();
-    return data;
-}  
-
+ 
 
 //PayPal Code
 //https://developer.paypal.com/sdk/js/configuration/#link-queryparameters
 url_to_head(paypal_sdk_url + "?client-id=" + client_id + "&enable-funding=venmo&currency=" + currency + "&intent=" + intent)
-.then(() => {
+.then(async () => {
+
+    // Récupération dynamique des données du panier dynamiquement avant l'affichage 
+    // de l'interface de paiement.  
+    const response = await fetch('http://localhost:8000/api/cart');
+    const cartData = response.json(); // Example : { currency: "USD", total: "65.18" }
+  
+       
+  
     //Handle loading spinner
     document.getElementById("loading").classList.add("hide");
     document.getElementById("content").classList.remove("hide");
@@ -57,7 +59,11 @@ url_to_head(paypal_sdk_url + "?client-id=" + client_id + "&enable-funding=venmo&
         createOrder: function(data, actions) { //https://developer.paypal.com/docs/api/orders/v2/#orders_create
             return fetch("http://localhost:3001/create_order", {
                 method: "post", headers: { "Content-Type": "application/json; charset=utf-8" },
-                body: JSON.stringify({ "intent": intent })
+                body: JSON.stringify({
+                     "intent": intent,
+                    "amount": cartData.total,       // Passe le total dynamique ici
+                    "currency": cartData.currency   // Passe la devise dynamique ici          
+                    })
             })
             .then((response) => response.json())
             .then((order) => { return order.id; });

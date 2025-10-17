@@ -2,26 +2,61 @@ import express from 'express';
 import fetch from 'node-fetch';
 import cors from "cors";
 import 'dotenv/config';
-
-      
-
-// We get the datas from the project e-shop  
-// app.get('/paypal/cart', (req, res) => {
-//     const cartData = getCartData();
-//     res.json(cartData); // Envoie les données au client
-// });
-     
-// async function getCartData() {
-//     const response = await fetch('http://localhost:8000/api/cart'); // Symfony
-//     const data = await response.json();
-//     return data;
-// }
  
-// Pour les fichiers statiques (comme .png, .css, .html) depuis le dossier courant”.
+import path from 'path'; 
+import { fileURLToPath } from 'url';
 
-     
-    
+ 
 const app = express();  
+const cartDatas = [];  // Déclaration d'une variable globale pour récupérer les données du panier.  
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+  
+app.set('view engine', 'ejs'); // Active EJS
+
+// __dirname : Dossier où se trouve index.ejs
+app.set('views', path.join(__dirname, 'views'));
+ 
+
+//const data = {};
+  
+   
+// C'est cette fonction qui est appelée après un clique de l'utilisateur sur le bouton Checkout.
+// A cette étapes précises, les données du panier sont initialisées.  
+app.get('/', async (req, res) => { 
+      
+        const response = await fetch('http://localhost:8000/api/cart'); // Symfony
+        const data = await response.json();
+ 
+        // const cartDatas = {
+        //     currency: data.currency,
+        //     total: data.total  
+        // };          
+              
+        console.log("cart datas");  
+        console.log(data);        
+        //console.log(data.total);  
+             
+        // return data                  
+  
+        // Affichage de la page index.html 
+    
+        res.render('index', { CART_DATA: JSON.stringify(cartDatas) });
+        // res.sendFile(process.cwd() + '/index.html'); 
+
+});  
+
+//Servers the style.css file
+app.get('/style.css', (req, res) => {
+    res.sendFile(process.cwd() + '/style.css');
+});
+//Servers the script.js file
+app.get('/script.js', (req, res) => {
+    res.sendFile(process.cwd() + '/script.js');
+});
+
+
  
 app.use(express.static('.'));
 
@@ -60,15 +95,16 @@ app.post('/create_order', (req, res) => {
             let order_data_json = {
                 'intent': req.body.intent.toUpperCase(),
                 'purchase_units': [{
-                    'amount': {
-
-                        'currency_code': 'USD',
+                    'amount': {      
+                        
+                        'currency_code': 'USD', 
                         'value': '1'   
-                        // 'currency_code': cartData.currency,
-                        // 'value': cartData.total    
-      
-                       }        
-                }]       
+                          
+                        // 'currency_code': data.currency,
+                        // 'value': data.total               
+                       
+                       }           
+                }]         
             };
             const data = JSON.stringify(order_data_json)
 
@@ -135,29 +171,7 @@ app.post('/complete_order', (req, res) => {
 
 // });
 
-import fs from 'fs';
-import path from 'path';
 
-
-   
-// C'est cette fonction qui est appelée après un clique de l'utilisateur sur le bouton Checkout.
-// A cette étapes précises, les données du panier sont initialisées.  
-app.get('/', (req, res) => { 
-    // Affichage de la page index.html 
-    res.sendFile(process.cwd() + '/index.html'); 
-
-});  
-
-     
-
-//Servers the style.css file
-app.get('/style.css', (req, res) => {
-    res.sendFile(process.cwd() + '/style.css');
-});
-//Servers the script.js file
-app.get('/script.js', (req, res) => {
-    res.sendFile(process.cwd() + '/script.js');
-});
 
 //PayPal Developer YouTube Video:
 //How to Retrieve an API Access Token (Node.js)

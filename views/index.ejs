@@ -22,8 +22,8 @@
                 <!-- Texte sur deux lignes avec <br> -->
                 <div style="display: flex; flex-direction: column; align-items: center;">
                   <span>Total incluant les frais de livraison : </span>
-                  <span style="margin-top: 10px; font-weight: bold;">$1 000 000 USD</span>
-                </div> 
+                  <span id="total-price" style="margin-top: 10px; font-weight: bold;">$92,04 USD</span>
+                </div>   
                          
               </div>     
 
@@ -46,35 +46,31 @@
           </div>
       </div>
 
-     <script>
-    
-        // document.addEventListener('DOMContentLoaded', async () => {
-        //   try {
-        //     const res = await fetch('http://localhost:8000/api/cart', {
-        //       credentials: 'include' // 🔥 très important pour envoyer les cookies de session
-        //     });   
-        //     const cartData = await res.json();
-        //     console.log("Panier :", cartData);
-                
+    <script>
+          window.cartData = <%- CART_DATA %>;
+  
+          if (window.cartData) {
+          const total = window.cartData.total;
+          const currency = window.cartData.currency;
+
+          // Affiche dans le span
+          const priceElement = document.getElementById('total-price');
+          if (priceElement) {
+              priceElement.textContent = `${total} ${currency}`;
+          }
+          // const formatted = new Intl.NumberFormat('en-US', {
+          // style: 'currency',
+          // currency: currency
+          // }).format(total); 
+
+          // priceElement.textContent = formatted;
             
-        //     // Mise à jour du prix affiché
-        //     const priceEl = document.getElementById('cart-total');
-        //     if (priceEl && cartData.value && cartData.currency_code) {
-        //       priceEl.textContent = `${cartData.value} ${cartData.currency_code}`;
-        //     }
-
-        //     window.cartData = cartData;
-        //     // Tu peux ensuite lancer PayPal, etc.
-              
-
-        //   } catch (err) {
-        //     console.error("Erreur de récupération du panier :", err);
-        //   }
-        // });     
-          
-         window.cartData = {{CART_DATA}};
-    </script>   
-    
+         }
+         
+         
+    </script>  
+      
+     
   </body>
     
 </html>

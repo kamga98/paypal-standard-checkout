@@ -8,8 +8,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/minstyle.io@2.0.1/dist/css/minstyle.io.min.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="script.js"></script>  
-   
-  </head>
+       
+  </head>    
   <body>
       <div class="container">
           <div class="row">  
@@ -22,10 +22,10 @@
                 <!-- Texte sur deux lignes avec <br> -->
                 <div style="display: flex; flex-direction: column; align-items: center;">
                   <span>Total incluant les frais de livraison : </span>
-                  <span id="total-price" style="margin-top: 10px; font-weight: bold;">$92,04 USD</span>
-                </div>   
+                  <span id="total-price" style="margin-top: 10px; font-weight: bold;">$72.18 USD</span>
+                </div>      
                          
-              </div>     
+              </div>        
 
               <div id="alerts" class="ms-text-center"></div>   
 
@@ -46,18 +46,27 @@
           </div>
       </div>
 
+      <!-- index.html -->  
+              
     <script>
-          window.cartData = <%- CART_DATA %>;
+          window.cartData = <%- CART_DATA %>; 
   
           if (window.cartData) {
+          const dollar_sign = "$"; 
           const total = window.cartData.total;
           const currency = window.cartData.currency;
 
+          console.log("Affichage de window.cartData");
+          console.log(window.cartData);   
+  
           // Affiche dans le span
           const priceElement = document.getElementById('total-price');
           if (priceElement) {
-              priceElement.textContent = `${total} ${currency}`;
-          }
+              priceElement.textContent = `${dollar_sign}${total} ${currency}`;
+          }  
+     
+         
+
           // const formatted = new Intl.NumberFormat('en-US', {
           // style: 'currency',
           // currency: currency

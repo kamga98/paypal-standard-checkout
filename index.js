@@ -8,7 +8,6 @@ import { fileURLToPath } from 'url';
 
  
 const app = express();  
-const cartDatas = [];  // Déclaration d'une variable globale pour récupérer les données du panier.  
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -17,35 +16,43 @@ app.set('view engine', 'ejs'); // Active EJS
 
 // __dirname : Dossier où se trouve index.ejs
 app.set('views', path.join(__dirname, 'views'));
- 
 
-//const data = {};
   
+  
+// Exportation des données reçues du projet e-shop 
+export async function getCartDatas() {
+  const resp = await fetch('http://localhost:8000/api/cart');
+  
+  console.log("data dans index.js et hors de la fonction app.get()");  
+  console.log(resp);  
+   
+  return resp.json();  
+    
+}  
+   
    
 // C'est cette fonction qui est appelée après un clique de l'utilisateur sur le bouton Checkout.
 // A cette étapes précises, les données du panier sont initialisées.  
 app.get('/', async (req, res) => { 
       
         const response = await fetch('http://localhost:8000/api/cart'); // Symfony
-        const data = await response.json();
+        const data = await response.json();  
  
-        // const cartDatas = {
-        //     currency: data.currency,
-        //     total: data.total  
-        // };          
-              
-        console.log("cart datas");  
-        console.log(data);        
-        //console.log(data.total);  
-             
-        // return data                  
-  
-        // Affichage de la page index.html 
-    
+        const cartDatas = {
+            currency: data.currency,
+            total: data.total     
+        };   
+   
+        // Extension de la variable de manière globale   
+        // globalThis.cartDatas = cartDatas;
+
+      
+        // Transmission de la variable cartDatas à la page index.html.
+        // Cette méthode fonctionne très bien.   
         res.render('index', { CART_DATA: JSON.stringify(cartDatas) });
         // res.sendFile(process.cwd() + '/index.html'); 
 
-});  
+});     
 
 //Servers the style.css file
 app.get('/style.css', (req, res) => {
@@ -99,7 +106,7 @@ app.post('/create_order', (req, res) => {
                         
                         'currency_code': 'USD', 
                         'value': '1'   
-                          
+                    
                         // 'currency_code': data.currency,
                         // 'value': data.total               
                        

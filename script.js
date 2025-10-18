@@ -1,4 +1,13 @@
 // Helper / Utility functions
+
+
+/* Nous devons importer les données du panier du fichier index.js pour les transmettre
+à la fonction createOrder() de ce fichier pour que paypal reçoive le montant total du panier 
+et la propriété currency (la monnaie de la commande). */ 
+
+  
+
+
 let url_to_head = (url) => {
     return new Promise(function(resolve, reject) {
         var script = document.createElement('script');
@@ -32,15 +41,16 @@ let alerts = document.getElementById("alerts");
 //PayPal Code
 //https://developer.paypal.com/sdk/js/configuration/#link-queryparameters
 url_to_head(paypal_sdk_url + "?client-id=" + client_id + "&enable-funding=venmo&currency=" + currency + "&intent=" + intent)
-.then(async () => {
-
+.then(async () => {  
+     
     // Récupération dynamique des données du panier dynamiquement avant l'affichage 
     // de l'interface de paiement.  
-    const response = await fetch('http://localhost:8000/api/cart');
-    const cartData = response.json(); // Example : { currency: "USD", total: "65.18" }
-  
-       
-  
+    // const response = await fetch('http://localhost:8000/api/cart');
+    // const cartDatas = response.json(); // Example : { currency: "USD", total: "65.18" }
+    // console.log("cartDatas dans script.js"); 
+    // console.log(cartDatas);     
+
+     
     //Handle loading spinner
     document.getElementById("loading").classList.add("hide");
     document.getElementById("content").classList.remove("hide");
@@ -48,7 +58,9 @@ url_to_head(paypal_sdk_url + "?client-id=" + client_id + "&enable-funding=venmo&
     let paypal_buttons = paypal.Buttons({ // https://developer.paypal.com/sdk/js/reference
         onClick: (data) => { // https://developer.paypal.com/sdk/js/reference/#link-oninitonclick
             //Custom JS here
-        },
+
+           
+        },         
         style: { //https://developer.paypal.com/sdk/js/reference/#link-style
             shape: 'rect',
             color: 'gold',
@@ -56,15 +68,19 @@ url_to_head(paypal_sdk_url + "?client-id=" + client_id + "&enable-funding=venmo&
             label: 'paypal'  
         },
   
+        // Cette fonction est appellée après un clic sur le bouton paypal.    
         createOrder: function(data, actions) { //https://developer.paypal.com/docs/api/orders/v2/#orders_create
             return fetch("http://localhost:3001/create_order", {
                 method: "post", headers: { "Content-Type": "application/json; charset=utf-8" },
                 body: JSON.stringify({
                      "intent": intent,
-                    "amount": cartData.total,       // Passe le total dynamique ici
-                    "currency": cartData.currency   // Passe la devise dynamique ici          
-                    })
-            })
+                     // "amount": cartDatas.total,       // Passe le total dynamique ici
+                    // "currency": cartDatas.currency   // Passe la devise dynamique ici 
+                     "amount": 72.18,       // Passe le total dynamique ici
+                     "currency": 'USD'   // Passe la devise dynamique ici      
+                                           
+                    })        
+            })    
             .then((response) => response.json())
             .then((order) => { return order.id; });
         },
@@ -106,8 +122,12 @@ url_to_head(paypal_sdk_url + "?client-id=" + client_id + "&enable-funding=venmo&
             console.log(err);
         }
     });
+    // "#payment_options" permet de lier la variable paypal_buttons de notre fichier à la balise <div> du fichier
+    // index.ejs qui contient l'id du bouton de paiement paypaL : <div id="payment_options"></div> 
     paypal_buttons.render('#payment_options');
+
+ 
 })
-.catch((error) => {
+.catch((error) => {   
     console.error(error);
 });
